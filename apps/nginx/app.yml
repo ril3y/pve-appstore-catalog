@@ -79,15 +79,15 @@ inputs:
     description: Number of Nginx worker processes. Set to 0 for auto-detection based on available CPU cores. Increase for high-traffic scenarios.
     help: "0 = auto (recommended for most setups)"
 
+permissions:
+  packages: [nginx]
+  paths: ["/var/www/", "/etc/nginx/"]
+  services: [nginx]
+  commands: [openssl, sed]
+
 provisioning:
-  script: provision/install.sh
+  script: provision/install.py
   timeout_sec: 300
-  env:
-    DOMAIN: "{{domain}}"
-    ENABLE_SSL: "{{enable_ssl}}"
-    HTTP_PORT: "{{http_port}}"
-    HTTPS_PORT: "{{https_port}}"
-    WORKER_PROCESSES: "{{worker_processes}}"
 
 outputs:
   - key: url

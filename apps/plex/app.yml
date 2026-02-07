@@ -76,17 +76,16 @@ inputs:
       min: 1024
       max: 65535
 
+permissions:
+  packages: [curl, plexmediaserver]
+  urls: ["https://downloads.plex.tv/*"]
+  paths: ["/mnt/media", "/tmp/plex-transcode", "/var/lib/plexmediaserver/", "/usr/share/keyrings/", "/etc/apt/sources.list.d/"]
+  services: [plexmediaserver]
+  apt_repos: ["deb [signed-by=/usr/share/keyrings/plex-archive-keyring.gpg] https://downloads.plex.tv/repo/deb public main"]
+
 provisioning:
-  script: provision/install.sh
+  script: provision/install.py
   timeout_sec: 600
-  env:
-    PLEX_CLAIM: "{{claim_token}}"
-    FRIENDLY_NAME: "{{friendly_name}}"
-    MEDIA_PATH: "{{media_path}}"
-    TRANSCODE_PATH: "{{transcode_path}}"
-    HTTP_PORT: "{{http_port}}"
-  redact_keys:
-    - PLEX_CLAIM
 
 outputs:
   - key: url

@@ -87,15 +87,15 @@ inputs:
       min: 512
       max: 131072
 
+permissions:
+  installer_scripts: ["https://ollama.ai/install.sh"]
+  paths: ["/etc/systemd/", "/usr/share/ollama/"]
+  services: [ollama]
+  commands: [ollama]
+
 provisioning:
-  script: provision/install.sh
+  script: provision/install.py
   timeout_sec: 1800
-  env:
-    DEFAULT_MODEL: "{{model}}"
-    API_PORT: "{{api_port}}"
-    BIND_ADDRESS: "{{bind_address}}"
-    MODELS_PATH: "{{models_path}}"
-    NUM_CTX: "{{num_ctx}}"
 
 outputs:
   - key: api_url

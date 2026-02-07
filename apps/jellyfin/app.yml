@@ -82,15 +82,15 @@ inputs:
         - qsv
         - nvenc
 
+permissions:
+  packages: [curl, gnupg]
+  installer_scripts: ["https://repo.jellyfin.org/install-debuntu.sh"]
+  paths: ["/mnt/media", "/var/cache/jellyfin", "/etc/jellyfin/"]
+  services: [jellyfin]
+
 provisioning:
-  script: provision/install.sh
+  script: provision/install.py
   timeout_sec: 600
-  env:
-    MEDIA_PATH: "{{media_path}}"
-    TRANSCODE_THREADS: "{{transcode_threads}}"
-    HTTP_PORT: "{{http_port}}"
-    CACHE_PATH: "{{cache_path}}"
-    HW_ACCEL: "{{hw_accel}}"
 
 outputs:
   - key: url

@@ -27,7 +27,7 @@ lxc:
     unprivileged: true
     cores: 4
     memory_mb: 8192
-    disk_gb: 50
+    disk_gb: 8
     features:
       - nesting
     onboot: true

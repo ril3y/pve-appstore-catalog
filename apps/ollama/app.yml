@@ -32,6 +32,15 @@ lxc:
       - nesting
     onboot: true
 
+volumes:
+  - name: models
+    type: volume
+    mount_path: /usr/share/ollama/.ollama/models
+    size_gb: 50
+    label: Model Storage
+    required: true
+    description: Downloaded LLM model files (4-70GB each)
+
 inputs:
   - key: model
     label: Default Model

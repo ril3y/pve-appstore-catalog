@@ -32,6 +32,15 @@ lxc:
       - nesting
     onboot: true
 
+volumes:
+  - name: ha-config
+    type: volume
+    mount_path: /opt/homeassistant/config
+    size_gb: 4
+    label: HA Config
+    required: true
+    description: Home Assistant configuration, database, and backups
+
 inputs:
   - key: timezone
     label: Timezone

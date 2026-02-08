@@ -34,6 +34,15 @@ lxc:
       - nesting
     onboot: true
 
+volumes:
+  - name: cache-data
+    type: volume
+    mount_path: /var/lib/crawl4ai
+    size_gb: 5
+    label: Cache & Data
+    required: true
+    description: Crawl cache and browser profile data
+
 inputs:
   - key: api_port
     label: API Port

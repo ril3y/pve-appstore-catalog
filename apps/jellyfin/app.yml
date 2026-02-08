@@ -32,6 +32,22 @@ lxc:
       - nesting
     onboot: true
 
+volumes:
+  - name: config-data
+    type: volume
+    mount_path: /var/lib/jellyfin
+    size_gb: 2
+    label: Jellyfin Data
+    required: true
+    description: Application config, database, and metadata cache
+  - name: media
+    type: bind
+    mount_path: /mnt/media
+    label: Media Library
+    default_host_path: /mnt/storage/media
+    required: false
+    description: Map your media library folder (movies, TV, music)
+
 inputs:
   - key: media_path
     label: Media Storage Path

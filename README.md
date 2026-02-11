@@ -6,16 +6,23 @@ Browse and install apps through the web UI — search by name, category, or tag.
 
 ## Apps
 
-| App | Version | Category | GPU |
-|-----|---------|----------|-----|
-| [Crawl4AI](apps/crawl4ai/) | 0.4.0 | ai, tools | - |
-| [Gluetun VPN Client](apps/gluetun/) | 3.40.0 | networking, vpn | - |
-| [Hello World (Nginx)](apps/hello-world/) | 1.0.1 | web, tools | - |
-| [Home Assistant](apps/homeassistant/) | 2025.1.0 | automation, smart-home | - |
-| [Jellyfin](apps/jellyfin/) | 10.10.0 | media, entertainment | intel, nvidia |
-| [Nginx](apps/nginx/) | 1.27.0 | networking, web | - |
-| [Ollama](apps/ollama/) | 0.6.0 | ai, tools | intel, nvidia |
-| [Plex Media Server](apps/plex/) | 1.41.0 | media, entertainment | intel, nvidia |
+<!-- BEGIN_APP_TABLE -->
+
+| App | Version | Category | OS | GPU |
+|-----|---------|----------|----|-----|
+| [Crawl4AI](apps/crawl4ai/) | 0.4.0 | ai, tools | debian-12 | - |
+| [GitLab CE](apps/gitlab/) | 1.0.0 | development, devops | ubuntu-24.04 | - |
+| [Gluetun VPN Client](apps/gluetun/) | 3.40.0 | networking, security | debian-12 | - |
+| [Hello World (Nginx)](apps/hello-world/) | 1.0.1 | web, tools | debian-12 | - |
+| [Home Assistant](apps/homeassistant/) | 2025.1.0 | automation, smart-home | debian-12 | - |
+| [Jellyfin](apps/jellyfin/) | 10.10.0 | media, entertainment | debian-12 | intel, nvidia |
+| [Nginx](apps/nginx/) | 1.27.0 | networking, web | debian-12 | - |
+| [Ollama](apps/ollama/) | 0.6.0 | ai, tools | debian-12 | intel, nvidia |
+| [Plex Media Server](apps/plex/) | 1.41.0 | media, entertainment | debian-12 | intel, nvidia |
+| [qBittorrent](apps/qbittorrent/) | 5.1.0 | media, tools | alpine-3.22 | - |
+| [Resilio Sync](apps/resilio-sync/) | 1.0.0 | utilities, backup | debian-12 | - |
+| [SWAG](apps/swag/) | 1.0.0 | networking | alpine-3.22 | - |
+<!-- END_APP_TABLE -->
 
 ## Structure
 
@@ -110,23 +117,46 @@ gpu:
 Install scripts use the Python SDK (`BaseApp`). Every operation (installing packages, writing files, enabling services) is checked against the `permissions` allowlist in `app.yml`. Unauthorized operations are blocked at runtime.
 
 ```python
-import sys, os
-sys.path.insert(0, os.environ.get("PYTHONPATH", "/opt/appstore/sdk"))
 from appstore import BaseApp, run
 
 class MyApp(BaseApp):
     def install(self):
-        self.log.info("Installing My App")
-        self.apt_install("nginx")
-        self.write_config("/opt/myapp/config.yml", CONFIG_TEMPLATE,
-            port=self.inputs.string("http_port", "8080"))
+        http_port = self.inputs.integer("http_port", 8080)
+        enable_ssl = self.inputs.boolean("enable_ssl", False)
+
+        self.pkg_install("nginx")
+        self.render_template("config.yml", "/opt/myapp/config.yml",
+            port=http_port)
+        self.deploy_provision_file("site.conf", "/etc/nginx/sites-available/default")
         self.enable_service("nginx")
-        self.log.output("url", f"http://localhost:{self.inputs.string('http_port', '8080')}")
 
 run(MyApp)
 ```
 
-Available helpers: `apt_install()`, `pip_install()`, `create_venv()`, `write_config()`, `enable_service()`, `restart_service()`, `create_dir()`, `download()`, `create_user()`, `add_apt_key()`, `add_apt_repo()`, `run_command()`, `run_installer_script()`, `chown()`.
+Key SDK methods:
+
+| Method | Purpose |
+|--------|---------|
+| `pkg_install()` | Install packages (auto-detects apt/apk) |
+| `pip_install()` | Install pip packages in a venv |
+| `render_template()` | Read a template from `provision/`, substitute variables, write to dest |
+| `deploy_provision_file()` | Copy a file from `provision/` to dest (no substitution) |
+| `provision_file()` | Read a provision file and return its contents as a string |
+| `write_config()` | Write a string template to a path with variable substitution |
+| `create_service()` | Create and start a systemd/OpenRC service |
+| `enable_service()` | Enable and start an existing service |
+| `create_dir()` | Create a directory with optional ownership |
+| `download()` | Download a URL to a file |
+| `create_user()` | Create a system user |
+| `add_apt_repository()` | Add an APT repo with signing key |
+| `run_command()` | Run a shell command (must be in permissions) |
+| `run_installer_script()` | Download and execute a remote install script |
+| `chown()` | Change file/directory ownership |
+| `wait_for_http()` | Poll an HTTP endpoint until it responds 200 |
+| `write_env_file()` | Write a KEY=VALUE environment file |
+| `status_page()` | Deploy a self-contained status page server |
+
+Use `inputs.string()`, `inputs.integer()`, and `inputs.boolean()` to read typed inputs. Keep config files as separate templates in `provision/` — avoid inline string constants.
 
 ### Test Config (test.yml)
 

@@ -1,0 +1,27 @@
+name: Update README app table
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/*/app.yml'
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate app table
+        run: ./scripts/generate-readme.sh
+
+      - name: Commit if changed
+        run: |
+          git diff --quiet README.md && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "Update README app table [auto]"
+          git push

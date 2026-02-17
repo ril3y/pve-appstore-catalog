@@ -18,6 +18,7 @@ Browse and install apps through the web UI — search by name, category, or tag.
 | [Jellyfin](apps/jellyfin/) | 10.10.0 | media, entertainment | debian-12 | intel, nvidia |
 | [Nginx](apps/nginx/) | 1.27.0 | networking, web | debian-12 | - |
 | [Ollama](apps/ollama/) | 0.6.0 | ai, tools | debian-12 | intel, nvidia |
+| [pihole-official](apps/pihole-official/) | 1.1.0 | networking | debian-12 | - |
 | [Plex Media Server](apps/plex/) | 1.41.1 | media, entertainment | debian-12 | intel, nvidia |
 | [Hello World (Nginx)](apps/pw-fork-test/) | 1.0.1 | web, tools | debian-12 | - |
 | [qBittorrent](apps/qbittorrent/) | 5.1.0 | media, tools | alpine-3.22 | - |
